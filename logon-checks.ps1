@@ -2,7 +2,6 @@
 
 # VariableS 
 $ErrorActionPreference = ‘SilentlyContinue’
-$ui = 1
 $CSVPATH = "\\s.ad.redbridge.gov.uk\L$\"
 $csvfile = "$CSVPATH$(get-date -Format "MMddyyyy")INTUNE.csv"
 
@@ -44,11 +43,11 @@ Else {$Over5Days = "0"}
 New-ItemProperty -LiteralPath 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power' -Name 'Over5Days' -Value $Over5Days -PropertyType DWord -Force -ea SilentlyContinue
 
 #Get Adapter, IP address and OS build
-$ifindex = Get-NetAdapter -IncludeHidden -Physical | where status -eq up | Select-Object -ExpandProperty ifindex
+#$ifindex = Get-NetAdapter -IncludeHidden -Physical | Where-Object status -eq up | Select-Object -ExpandProperty ifindex
 $v1 = Get-NetIPInterface -AddressFamily IPv4 -InterfaceAlias "REDBRIDGE AO-VPN" | Select-Object interfacemetric -ExpandProperty interfacemetric
 $v2 = Get-VpnConnection -AllUserConnection -name "REDBRIDGE AO-VPN" | Select-Object connectionstatus -ExpandProperty connectionstatus
 $v4 = Get-DAConnectionStatus | Select-Object -ExpandProperty Status -ErrorAction SilentlyContinue
-$v5 = Get-NetIPAddress -AddressFamily IPv4 -InterfaceIndex $ifindex -ErrorAction SilentlyContinue | Select-Object -ExpandProperty IPAddress
+# $v5 = Get-NetIPAddress -AddressFamily IPv4 -InterfaceIndex $ifindex -ErrorAction SilentlyContinue | Select-Object -ExpandProperty IPAddress
 $v6 = Get-ComputerInfo | Select-Object -ExpandProperty WindowsVersion
 
 
@@ -58,7 +57,7 @@ $v33 = Test-NetConnection -ComputerName pay.redbridge.gov.uk -Port 443
 $v8 = Test-NetConnection -ComputerName my.redbridge.gov.uk -Port 443
 $v9 = Test-NetConnection -ComputerName ad.redbridge.gov.uk
 $dns = Resolve-DnsName -Name adfs.redbridge.gov.uk | Select-Object -ExpandProperty IPAddress
-$v99 = $v3.SourceAddress | select IPaddress -ExpandProperty IPaddress
+$v99 = $v3.SourceAddress | Select-Object IPaddress -ExpandProperty IPaddress
 $10 = Test-NetConnection -ComputerName www.redbridge.gov.uk -TraceRoute -hop 2
 $11 = $10.TraceRoute
 
